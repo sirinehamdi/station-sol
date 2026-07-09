@@ -102,7 +102,9 @@ def get_data():
 def index():
     return render_template("index.html")
 
-
+@app.route("/cmd")
+def cmd():
+    return render_template("cmd.html")
 # ==================================================
 # CAM ON (HTTP → ESP32)
 # ==================================================

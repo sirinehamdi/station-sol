@@ -105,6 +105,12 @@ def index():
 @app.route("/cmd")
 def cmd():
     return render_template("cmd.html")
+@app.route("/payload")
+def payload():
+    return render_template("payload.html")
+@app.route("/HK")
+def HouseKeeping():
+    return render_template("HouseKeeping.html")
 # ==================================================
 # CAM ON (HTTP → ESP32)
 # ==================================================

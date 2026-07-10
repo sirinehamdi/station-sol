@@ -116,6 +116,23 @@
   max-width:400px;
   border-radius:12px;
 }
+      .topbar-nav .nav-link {
+        color: #000 !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        background-color: transparent !important;
+      }
+      .topbar-nav .nav-link:hover,
+      .topbar-nav .nav-link:focus {
+        color: #d32f2f !important;
+        text-decoration: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+      }
+      .topbar-nav .nav-link.active {
+        color: #d32f2f !important;
+        text-decoration: none !important;
+      }
     </style>
   </head>
   <body>
@@ -147,6 +164,18 @@
               </nav>
 
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                <li class="nav-item">
+                  <a class="nav-link" href="/HK">HK</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/payload">Payload</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/tracking">Tracking</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/cmd">CMD</a>
+                </li>
                 <li
                   class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
                 >

@@ -37,6 +37,25 @@ ESP32_IP = "172.20.10.2"
 
 
 # ==================================================
+# PAGE WEB
+# ==================================================
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/cmd")
+def cmd():
+    return render_template("cmd.html")
+@app.route("/payload")
+def payload():
+    return render_template("payload.html")
+@app.route("/HK")
+def HouseKeeping():
+    return render_template("HouseKeeping.html")
+@app.route("/tracking")
+def tracking():
+    return render_template("tracking.html")
+# ==================================================
 # RECEPTION DONNEES ESP32 (WiFi POST JSON)
 # ==================================================
 @app.route("/data", methods=["POST"])
@@ -95,22 +114,6 @@ def get_data():
     return jsonify(data_store)
 
 
-# ==================================================
-# PAGE WEB
-# ==================================================
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/cmd")
-def cmd():
-    return render_template("cmd.html")
-@app.route("/payload")
-def payload():
-    return render_template("payload.html")
-@app.route("/HK")
-def HouseKeeping():
-    return render_template("HouseKeeping.html")
 # ==================================================
 # CAM ON (HTTP → ESP32)
 # ==================================================

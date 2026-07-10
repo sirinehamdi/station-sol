@@ -6,7 +6,19 @@ import imghdr
 import os
 import requests
 
+from models import db, Log, Command, Telemetry, Image
+
 app = Flask(__name__)
+app.instance_path = os.path.join(app.root_path, "instance")
+os.makedirs(app.instance_path, exist_ok=True)
+
+db_path = os.path.join(app.instance_path, "data.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db.init_app(app)
+with app.app_context():
+    db.create_all()
 
 # ==================================================
 # STOCKAGE DONNEES ESP32
@@ -65,15 +77,15 @@ def receive_data():
     data = request.json
     print("date ", data)
     
-    now_time = datetime.now().strftime("%H:%M:%S")
-    now_date = datetime.now().strftime("%d-%m-%Y")
+    timestamp = datetime.now()
+    timestamp_str = timestamp.strftime("%Y-%m-%d %H:%M:%S.%f")
 
     # Ajouter "time" au data_store si pas déjà présent
     if "time" not in data_store:
         data_store["time"] = []
     
-    # Stocker le timestamp
-    data_store["time"].append(now_time)
+    # Stocker le timestamp complet de réception en heure locale
+    data_store["time"].append(timestamp_str)
     
     # === CRÉATION AUTOMATIQUE DES PARAMÈTRES ===
     # Itérer sur tous les paramètres reçus du JSON
@@ -89,10 +101,20 @@ def receive_data():
     # Stocker le status
     data_store2["status"] = data.get("status", 0)
 
+    # Enregistrement dans la base SQLite
+    try:
+        for key, value in data.items():
+            telemetry = Telemetry(key=str(key), value=str(value), timestamp=timestamp)
+            db.session.add(telemetry)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print("DB save error:", e)
+
     # === ÉCRITURE FICHIER data.txt (FORMAT SIMPLE) ===
-    # Format: HH:MM:SS param:value param:value ...
+    # Format: YYYY-MM-DD HH:MM:SS.ffffff param:value param:value ...
     with open(file_path, "a") as f:
-        line_parts = [now_time]
+        line_parts = [timestamp_str]
         
         # Ajouter tous les paramètres avec leurs noms
         for key in sorted(data.keys()):
